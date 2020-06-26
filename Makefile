@@ -1,15 +1,18 @@
 PORT := /dev/cu.usbserial-01DFA28F
 BIN_PATH := ./output/mp.bin
-BINARY := esp32-idf4-20191220-v1.12.bin
+BINARY := esp32-idf4-20200625-unstable-v1.12-576-g76faeed09.bin
+# esp32-idf4-20191220-v1.12.bin
 
 
-all: clean setup getbin erase flash repl
+all: clean setup getbin erase flash deploy repl
 
 clean:
 	rm -rf ./output
 
 setup:
 	pip3 install esptool
+	pip3 install rshell
+	pip3 install adafruit-ampy
 	mkdir ./output
 
 getbin:
@@ -23,3 +26,9 @@ flash:
 
 repl:
 	rshell -a --buffer-size=30 --port=${PORT}
+
+undeploy:
+	ampy -p ${PORT} rmdir /
+
+deploy:
+	ampy -p ${PORT} put ./src /
