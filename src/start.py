@@ -1,16 +1,16 @@
 import sys
-import logging
+from upy import logging
 import connect
 
 logging.basicConfig(logging.DEBUG)
 log = logging.getLogger(__name__)
 
-sys.path.append('/flash/upy')
-sys.path.append('/flash/webthing')
-sys.path.append('/flash/example')
+sys.path.append('/upy')
+sys.path.append('/webthing')
+sys.path.append('/example')
 
 connect.connect_to_ap()
-connect.start_ntp()
+# connect.start_ntp()
 
 
 def rgb():
