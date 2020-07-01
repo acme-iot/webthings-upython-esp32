@@ -1,6 +1,7 @@
 """Python Web Thing server implementation."""
 
-from microWebSrv import MicroWebSrv
+# from microWebSrv import MicroWebSrv
+from web.microWebSrv import MicroWebSrv
 import _thread
 import logging
 import sys
@@ -131,7 +132,7 @@ class WebThingServer:
         self.port = port
         self.hostname = hostname
 
-        station = network.WLAN()
+        station = network.WLAN(dhcp_hostname="myhost")
         mac = station.config('mac')
         self.system_hostname = 'esp32-upy-{:02x}{:02x}{:02x}'.format(
           mac[3], mac[4], mac[5])
@@ -240,7 +241,7 @@ class WebThingServer:
         # running in thread make shure WebServer has enough stack size to
         # handle also the WebSocket requests.
         log.info('Starting Web Server on port {}'.format(self.port))
-        self.server.Start(threaded=srv_run_in_thread, stackSize=12*1024)
+        self.server.Start(threaded=srv_run_in_thread)
 
         mdns = network.mDNS()
         mdns.start(self.system_hostname, 'MicroPython with mDNS')

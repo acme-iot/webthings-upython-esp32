@@ -3,7 +3,8 @@ BIN_PATH := ./output/mp.bin
 BINARY := esp32-idf4-20200625-unstable-v1.12-576-g76faeed09.bin
 # esp32-idf4-20191220-v1.12.bin
 ESPIDF_HASH := 4c81978a3e2220674a432a588292a4c860eef27b
-
+MAKE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+CURRENT_DIR := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 
 all: clean setup getbin erase flash deploy repl
 
@@ -40,17 +41,22 @@ deploy:
 workflow: deploy repl
 
 gettip:
-	cd ./output
-	git clone --depth 1 https://github.com/micropython/micropython.git
-	cd mpy-cross
-	make
-	cd ..
-	cd ports/esp32
+	cd ./output \
+	&& export OUTPUT_DIR=$(shell pwd)
+	echo $OUTPUT_DIR
+	&& rm -rf micropython \
+	&& git clone --depth 1 https://github.com/micropython/micropython.git \
+	&& cd ./micropython/mpy-cross \
+	&& make \
+	&& cd .. \
+	&& cd ./ports/esp32 \
+	&& export ESPIDF=$OUTPUT_DIR/esp-idf \
+	&& mkdir -p $ESPIDF \
+	&& cd $ESPIDF \
+	&& git clone https://github.com/espressif/esp-idf.git $ESPIDF \
+	&& git checkout ${ESPIDF_HASH} \
+	&& git submodule update --init --recursive
 
-	git clone https://github.com/espressif/esp-idf.git ${ESPIDF_HASH}
-	#cd ${ESPIDF_HASH}
-	#mkdir -p ${ESPIDF_HASH}
-	git checkout ${ESPIDF_HASH}
-	git submodule update --init --recursive
-	export ESPIDF=/Users/tmillar/dev/repo/acme-iot/webthings-upython-esp32/output/micropython/ports/esp32/${ESPIDF_HASH}
-	make ESPIDF=${ESPIDF_HASH}
+
+
+

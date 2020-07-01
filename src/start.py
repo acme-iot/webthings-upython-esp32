@@ -7,6 +7,7 @@ log = logging.getLogger(__name__)
 
 sys.path.append('/upy')
 sys.path.append('/webthing')
+sys.path.append('/web')
 sys.path.append('/example')
 
 connect.connect_to_ap()
