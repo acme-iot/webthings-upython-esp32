@@ -20,12 +20,6 @@ setup:
 getbin:
 	curl -k -o ${BIN_PATH} https://micropython.org/resources/firmware/${BINARY}
 
-erase:
-	esptool.py --chip esp32 --port ${PORT} erase_flash
-
-flash:
-	esptool.py --chip esp32 --port ${PORT} write_flash -z 0x1000 ${BIN_PATH}
-
 repl:
 	rshell -a --buffer-size=30 --port=${PORT}
 
@@ -39,6 +33,14 @@ deploy:
 	ampy -p ${PORT} put ./src/start.py /start.py
 
 workflow: deploy repl
+
+erase:
+	#esptool.py --chip esp32 --port ${PORT} erase_flash
+	cd ./output/micropython/ports/esp32/ \
+	&& make erase PYTHON=python3 PORT=${PORT}
+
+flash:
+	esptool.py --chip esp32 --port ${PORT} write_flash -z 0x1000 ${BIN_PATH}
 
 get.source:
 	rm -rf ./output \

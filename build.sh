@@ -22,4 +22,4 @@ source $IDF_PATH/export.sh
 make submodules PYTHON=python3
 make PYTHON=python3
 
-cd $OUTPUT_DIR/..
+#cd $OUTPUT_DIR/..
