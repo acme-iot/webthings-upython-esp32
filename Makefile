@@ -40,20 +40,23 @@ deploy:
 
 workflow: deploy repl
 
-gettip:
-	cd ./output \
-	&& export OUTPUT_DIR=$(shell pwd)
-	echo $OUTPUT_DIR
-	&& rm -rf micropython \
+try:
+	cd ./scripts \
+	&& source ./build.sh 4c81978a3e2220674a432a588292a4c860eef27b
+
+get.source:
+	rm -rf ./output \
+	&& mkdir ./output \
+	&& cd ./output \
 	&& git clone --depth 1 https://github.com/micropython/micropython.git \
 	&& cd ./micropython/mpy-cross \
 	&& make \
 	&& cd .. \
 	&& cd ./ports/esp32 \
-	&& export ESPIDF=$OUTPUT_DIR/esp-idf \
-	&& mkdir -p $ESPIDF \
-	&& cd $ESPIDF \
-	&& git clone https://github.com/espressif/esp-idf.git $ESPIDF \
+	&& git submodule update --init \
+	&& cd ../../../ \
+	&& git clone https://github.com/espressif/esp-idf.git \
+	&& cd ./esp-idf \
 	&& git checkout ${ESPIDF_HASH} \
 	&& git submodule update --init --recursive
 
