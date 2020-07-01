@@ -40,10 +40,6 @@ deploy:
 
 workflow: deploy repl
 
-try:
-	cd ./scripts \
-	&& source ./build.sh 4c81978a3e2220674a432a588292a4c860eef27b
-
 get.source:
 	rm -rf ./output \
 	&& mkdir ./output \
